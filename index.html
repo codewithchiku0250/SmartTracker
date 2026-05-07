@@ -599,6 +599,17 @@
 
         <!-- REPORTS VIEW -->
         <div id="view-reports" class="view">
+            <div class="summary-cards" style="margin-bottom: 20px;">
+                <div class="summary-card">
+                    <div class="summary-title">Total Income (All)</div>
+                    <div class="summary-amount" id="reportTotalIncome" style="color: var(--success);">₹0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-title">Total Expense (All)</div>
+                    <div class="summary-amount" id="reportTotalExpense" style="color: var(--danger);">₹0</div>
+                </div>
+            </div>
+
             <div class="card">
                 <h2 style="margin-bottom: 15px; font-size: 1.2rem;">Category Breakdown</h2>
                 <div class="chart-container">
@@ -997,6 +1008,17 @@
         }
 
         function renderAllList() {
+            let totalInc = 0;
+            let totalExp = 0;
+            expenses.forEach(exp => {
+                if (exp.type === 'income') totalInc += exp.amount;
+                else totalExp += exp.amount;
+            });
+            const reportIncEl = document.getElementById('reportTotalIncome');
+            const reportExpEl = document.getElementById('reportTotalExpense');
+            if (reportIncEl) reportIncEl.innerText = `₹${totalInc}`;
+            if (reportExpEl) reportExpEl.innerText = `₹${totalExp}`;
+
             const list = document.getElementById('allList');
             const sorted = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
             if (sorted.length === 0) {
@@ -1132,10 +1154,18 @@
                     const sorted = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
                     let totalAmount = 0;
 
+                    let totalInc = 0;
+                    let totalExp = 0;
+
                     const tableData = sorted.map(exp => {
                         const type = exp.type || 'expense';
-                        if (type === 'income') totalAmount += exp.amount;
-                        else totalAmount -= exp.amount;
+                        if (type === 'income') {
+                            totalAmount += exp.amount;
+                            totalInc += exp.amount;
+                        } else {
+                            totalAmount -= exp.amount;
+                            totalExp += exp.amount;
+                        }
                         
                         return [
                             formatDate(exp.date),
@@ -1150,7 +1180,11 @@
                         startY: 35,
                         head: [['Date', 'Type', 'Category', 'Note', 'Amount']],
                         body: tableData,
-                        foot: [['', '', '', 'Balance:', `Rs. ${totalAmount}`]],
+                        foot: [
+                            ['', '', '', 'Total Income:', `+Rs. ${totalInc}`],
+                            ['', '', '', 'Total Expense:', `-Rs. ${totalExp}`],
+                            ['', '', '', 'Net Balance:', `Rs. ${totalAmount}`]
+                        ],
                         theme: 'striped',
                         headStyles: { fillColor: [79, 70, 229] },
                         footStyles: { fillColor: [243, 244, 246], textColor: [31, 41, 55], fontStyle: 'bold' }
