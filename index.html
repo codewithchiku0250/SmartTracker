@@ -512,10 +512,15 @@
 
     <header>
         <div>
-            <div class="header-title">SmartTracker</div>
+            <div class="header-title" data-i18n="appTitle">SmartTracker</div>
             <div id="greetingName" style="font-size: 0.9rem; color: var(--text-muted); margin-top: 2px; cursor: pointer;" title="Click to change name"></div>
         </div>
         <div>
+            <select id="langBtn" class="theme-toggle" style="appearance:none; border:none; outline:none; background:transparent; font-size:1.2rem; margin-right:5px; cursor:pointer;" title="Change Language">
+                <option value="en">🇬🇧 EN</option>
+                <option value="hi">🇮🇳 HI</option>
+                <option value="ur">🇵🇰 UR</option>
+            </select>
             <button class="theme-toggle" id="themeBtn" title="Toggle Theme"><i class="fas fa-moon"></i></button>
             <button class="theme-toggle" id="pdfBtn" title="Download PDF"><i class="fas fa-file-pdf"
                     style="color: #ef4444;"></i></button>
@@ -529,25 +534,25 @@
         <div id="view-home" class="view active">
             <div class="summary-cards">
                 <div class="summary-card balance">
-                    <div class="summary-title">Total Balance</div>
+                    <div class="summary-title" data-i18n="totalBalance">Total Balance</div>
                     <div class="summary-amount" id="totalBalance">₹0</div>
                 </div>
                 <div class="top-row">
                     <div class="summary-card">
-                        <div class="summary-title">Income (Month)</div>
+                        <div class="summary-title" data-i18n="incomeMonth">Income (Month)</div>
                         <div class="summary-amount" id="monthIncome" style="color: var(--success);">₹0</div>
                     </div>
                     <div class="summary-card">
-                        <div class="summary-title">Expense (Month)</div>
+                        <div class="summary-title" data-i18n="expenseMonth">Expense (Month)</div>
                         <div class="summary-amount" id="monthExpense" style="color: var(--danger);">₹0</div>
                     </div>
                 </div>
             </div>
 
             <div class="list-header">
-                <div class="list-title">Recent Expenses</div>
+                <div class="list-title" data-i18n="recentExpenses">Recent Transactions</div>
                 <div class="list-title" style="font-size: 0.9rem; color: var(--primary); cursor: pointer;"
-                    onclick="switchView('reports')">View All</div>
+                    onclick="switchView('reports')" data-i18n="viewAll">View All</div>
             </div>
 
             <div class="transaction-list" id="recentList"></div>
@@ -556,45 +561,45 @@
         <!-- ADD EXPENSE VIEW -->
         <div id="view-add" class="view">
             <div class="card">
-                <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Add Transaction</h2>
+                <h2 style="margin-bottom: 20px; font-size: 1.2rem;" data-i18n="addTransaction">Add Transaction</h2>
 
                 <div class="type-toggle">
-                    <button type="button" class="type-btn expense active" onclick="setTxType('expense')">Expense</button>
-                    <button type="button" class="type-btn income" onclick="setTxType('income')">Income</button>
+                    <button type="button" class="type-btn expense active" onclick="setTxType('expense')" data-i18n="expenseBtn">Expense</button>
+                    <button type="button" class="type-btn income" onclick="setTxType('income')" data-i18n="incomeBtn">Income</button>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-voice" id="voiceBtn">
-                        <i class="fas fa-microphone"></i> Voice Input
+                        <i class="fas fa-microphone"></i> <span data-i18n="voiceInput">Voice Input</span>
                     </button>
                     <label class="btn btn-photo" style="margin: 0; cursor: pointer;">
-                        <i class="fas fa-camera"></i> Scan Bill
+                        <i class="fas fa-camera"></i> <span data-i18n="scanBill">Scan Bill</span>
                         <input type="file" accept="image/*" capture="environment" id="photoInput">
                     </label>
                 </div>
 
-                <div style="text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;">Or enter manually</div>
+                <div style="text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;" data-i18n="enterManually">Or enter manually</div>
 
                 <form id="addForm">
                     <input type="hidden" id="editId" value="">
                     <div class="form-group">
-                        <label>Amount (₹)</label>
+                        <label data-i18n="amountLabel">Amount (₹)</label>
                         <input type="number" id="amount" class="form-control" required placeholder="Eg. 50">
                     </div>
                     <div class="form-group">
-                        <label>Category</label>
+                        <label data-i18n="categoryLabel">Category</label>
                         <select id="category" class="form-control" required></select>
                     </div>
                     <div class="form-group">
-                        <label>Note (Optional)</label>
+                        <label data-i18n="noteLabel">Note (Optional)</label>
                         <input type="text" id="note" class="form-control" placeholder="Notes (e.g. Lunch with team)">
                     </div>
                     <div class="form-group">
-                        <label>Date</label>
+                        <label data-i18n="dateLabel">Date</label>
                         <input type="date" id="date" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary" style="margin-top: 10px;">
-                        <i class="fas fa-save"></i> Save Expense
+                        <i class="fas fa-save"></i> <span data-i18n="saveBtn">Save Transaction</span>
                     </button>
                 </form>
             </div>
@@ -604,31 +609,31 @@
         <div id="view-reports" class="view">
             <div class="summary-cards" style="margin-bottom: 20px;">
                 <div class="summary-card">
-                    <div class="summary-title">Total Income (All)</div>
+                    <div class="summary-title" data-i18n="totalIncomeAll">Total Income (All)</div>
                     <div class="summary-amount" id="reportTotalIncome" style="color: var(--success);">₹0</div>
                 </div>
                 <div class="summary-card">
-                    <div class="summary-title">Total Expense (All)</div>
+                    <div class="summary-title" data-i18n="totalExpenseAll">Total Expense (All)</div>
                     <div class="summary-amount" id="reportTotalExpense" style="color: var(--danger);">₹0</div>
                 </div>
             </div>
 
             <div class="card">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">Category Breakdown</h2>
+                <h2 style="margin-bottom: 15px; font-size: 1.2rem;" data-i18n="categoryBreakdown">Category Breakdown</h2>
                 <div class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
             </div>
 
             <div class="card">
-                <h2 style="margin-bottom: 15px; font-size: 1.2rem;">Daily Trend</h2>
+                <h2 style="margin-bottom: 15px; font-size: 1.2rem;" data-i18n="dailyTrend">Daily Trend</h2>
                 <div class="chart-container">
                     <canvas id="barChart"></canvas>
                 </div>
             </div>
 
             <div class="list-header" style="margin-top: 20px;">
-                <div class="list-title">All Expenses</div>
+                <div class="list-title" data-i18n="allExpenses">All Transactions</div>
             </div>
             <div class="transaction-list" id="allList"></div>
         </div>
@@ -639,17 +644,17 @@
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchView('home')" id="nav-home">
             <i class="fas fa-home"></i>
-            <span>Home</span>
+            <span data-i18n="navHome">Home</span>
         </div>
         <div class="nav-item" style="position: relative;" onclick="switchView('add')" id="nav-add">
             <div class="fab">
                 <i class="fas fa-plus"></i>
             </div>
-            <span style="margin-top: 30px;">Add</span>
+            <span style="margin-top: 30px;" data-i18n="navAdd">Add</span>
         </div>
         <div class="nav-item" onclick="switchView('reports')" id="nav-reports">
             <i class="fas fa-chart-pie"></i>
-            <span>Reports</span>
+            <span data-i18n="navReports">Reports</span>
         </div>
     </div>
 
@@ -671,7 +676,94 @@
         let barChartInstance = null;
         let currentTxType = 'expense';
 
-        const expenseCategories = {
+        
+        const t = {
+            en: {
+                appTitle: "SmartTracker", totalBalance: "Total Balance", incomeMonth: "Income (Month)", expenseMonth: "Expense (Month)",
+                recentExpenses: "Recent Transactions", viewAll: "View All", totalIncomeAll: "Total Income (All)",
+                totalExpenseAll: "Total Expense (All)", categoryBreakdown: "Category Breakdown", dailyTrend: "Daily Trend",
+                allExpenses: "All Transactions", addTransaction: "Add Transaction", expenseBtn: "Expense", incomeBtn: "Income",
+                voiceInput: "Voice Input", scanBill: "Scan Bill", enterManually: "Or enter manually", amountLabel: "Amount (₹)",
+                categoryLabel: "Category", noteLabel: "Note (Optional)", dateLabel: "Date", saveBtn: "Save Transaction",
+                navHome: "Home", navAdd: "Add", navReports: "Reports", noData: "No transactions yet. Start adding!",
+                msgAdded: "Added successfully", msgUpdated: "Updated successfully", msgDeleted: "Deleted",
+                msgPDFGen: "Generating PDF...", msgPDFDone: "PDF downloaded successfully", msgExportDone: "Data exported successfully",
+                msgNoData: "No data to export", promptName: "Please enter your name:", updateName: "Update your name:",
+                welcome: "Welcome", txtExpense: "Expense", txtIncome: "Income", txtBalance: "Balance", txtTotalIncome: "Total Income", txtTotalExpense: "Total Expense", txtNetBalance: "Net Balance",
+                cats: {
+                    'Food': '🍔 Food & Dining', 'Travel': '🚗 Travel & Transport', 'Shopping': '🛍️ Shopping',
+                    'Bills': '📱 Bills & Recharges', 'Groceries': '🥦 Groceries', 'Health': '💊 Health', 'Other': '✨ Other',
+                    'Salary': '💰 Salary', 'Business': '💼 Business', 'Gift': '🎁 Gift'
+                }
+            },
+            hi: {
+                appTitle: "स्मार्ट ट्रैकर", totalBalance: "कुल बैलेंस", incomeMonth: "आय (महीना)", expenseMonth: "खर्च (महीना)",
+                recentExpenses: "हाल के लेन-देन", viewAll: "सभी देखें", totalIncomeAll: "कुल आय (सभी)",
+                totalExpenseAll: "कुल खर्च (सभी)", categoryBreakdown: "श्रेणी विवरण", dailyTrend: "दैनिक रुझान",
+                allExpenses: "सभी लेन-देन", addTransaction: "लेन-देन जोड़ें", expenseBtn: "खर्च", incomeBtn: "कमाई",
+                voiceInput: "बोलकर जोड़ें", scanBill: "बिल स्कैन करें", enterManually: "या खुद लिखें", amountLabel: "राशि (₹)",
+                categoryLabel: "श्रेणी", noteLabel: "नोट (वैकल्पिक)", dateLabel: "तारीख", saveBtn: "लेन-देन सहेजें",
+                navHome: "होम", navAdd: "जोड़ें", navReports: "रिपोर्ट", noData: "अभी कोई लेन-देन नहीं है। जोड़ना शुरू करें!",
+                msgAdded: "सफलतापूर्वक जोड़ा गया", msgUpdated: "सफलतापूर्वक अपडेट किया गया", msgDeleted: "हटा दिया गया",
+                msgPDFGen: "PDF बन रहा है...", msgPDFDone: "PDF डाउनलोड हो गया", msgExportDone: "डेटा सफलतापूर्वक निर्यात किया गया",
+                msgNoData: "निर्यात करने के लिए कोई डेटा नहीं है", promptName: "कृपया अपना नाम दर्ज करें:", updateName: "अपना नाम अपडेट करें:",
+                welcome: "स्वागत है", txtExpense: "खर्च", txtIncome: "आय", txtBalance: "बैलेंस", txtTotalIncome: "कुल आय", txtTotalExpense: "कुल खर्च", txtNetBalance: "शुद्ध बैलेंस",
+                cats: {
+                    'Food': '🍔 खाना-पीना', 'Travel': '🚗 यात्रा और परिवहन', 'Shopping': '🛍️ खरीदारी',
+                    'Bills': '📱 बिल और रिचार्ज', 'Groceries': '🥦 किराना', 'Health': '💊 स्वास्थ्य', 'Other': '✨ अन्य',
+                    'Salary': '💰 वेतन', 'Business': '💼 व्यवसाय', 'Gift': '🎁 उपहार'
+                }
+            },
+            ur: {
+                appTitle: "اسمارٹ ٹریکر", totalBalance: "کل بیلنس", incomeMonth: "آمدنی (مہینہ)", expenseMonth: "اخراجات (مہینہ)",
+                recentExpenses: "حالیہ لین دین", viewAll: "سب دیکھیں", totalIncomeAll: "کل آمدنی (سب)",
+                totalExpenseAll: "کل اخراجات (سب)", categoryBreakdown: "زمرہ کی تفصیل", dailyTrend: "روزانہ کا رجحان",
+                allExpenses: "تمام لین دین", addTransaction: "لین دین شامل کریں", expenseBtn: "خرچ", incomeBtn: "آمدنی",
+                voiceInput: "بول کر شامل کریں", scanBill: "بل اسکین کریں", enterManually: "یا خود لکھیں", amountLabel: "رقم (₹)",
+                categoryLabel: "زمرہ", noteLabel: "نوٹ (اختیاری)", dateLabel: "تاریخ", saveBtn: "محفوظ کریں",
+                navHome: "ہوم", navAdd: "شامل کریں", navReports: "رپورٹس", noData: "ابھی تک کوئی لین دین نہیں ہے۔ شروع کریں!",
+                msgAdded: "کامیابی سے شامل کیا گیا", msgUpdated: "کامیابی سے اپ ڈیٹ کیا گیا", msgDeleted: "حذف کر دیا گیا",
+                msgPDFGen: "PDF بنائی جا رہی ہے...", msgPDFDone: "PDF ڈاؤن لوڈ ہو گئی", msgExportDone: "ڈیٹا کامیابی سے برآمد کیا گیا",
+                msgNoData: "برآمد کرنے کے لیے کوئی ڈیٹا نہیں", promptName: "براہ کرم اپنا نام درج کریں:", updateName: "اپنا نام اپ ڈیٹ کریں:",
+                welcome: "خوش آمدید", txtExpense: "اخراجات", txtIncome: "آمدنی", txtBalance: "بیلنس", txtTotalIncome: "کل آمدنی", txtTotalExpense: "کل اخراجات", txtNetBalance: "خالص بیلنس",
+                cats: {
+                    'Food': '🍔 کھانا پینا', 'Travel': '🚗 سفر اور ٹرانسپورٹ', 'Shopping': '🛍️ خریداری',
+                    'Bills': '📱 بل اور ریچارج', 'Groceries': '🥦 کریانہ', 'Health': '💊 صحت', 'Other': '✨ دیگر',
+                    'Salary': '💰 تنخواہ', 'Business': '💼 کاروبار', 'Gift': '🎁 تحفہ'
+                }
+            }
+        };
+
+        let currentLang = localStorage.getItem('smart_lang') || 'en';
+
+        function applyLang(lang) {
+            currentLang = lang;
+            localStorage.setItem('smart_lang', lang);
+            document.getElementById('langBtn').value = lang;
+            
+            if(lang === 'ur') document.body.style.direction = 'rtl';
+            else document.body.style.direction = 'ltr';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(t[lang][key]) el.innerHTML = t[lang][key];
+            });
+
+            if(userName) document.getElementById('greetingName').innerText = `${t[lang].welcome}, ${userName} 👋`;
+
+            setTxType(currentTxType);
+            updateDashboard();
+            if (document.getElementById('view-reports').classList.contains('active')) {
+                renderAllList();
+                generateCharts();
+            }
+        }
+
+        document.getElementById('langBtn').addEventListener('change', (e) => {
+            applyLang(e.target.value);
+        });
+
+const expenseCategories = {
             'Food': { color: '#f59e0b', icon: 'fa-hamburger', label: '🍔 Food & Dining' },
             'Travel': { color: '#3b82f6', icon: 'fa-car', label: '🚗 Travel & Transport' },
             'Shopping': { color: '#ec4899', icon: 'fa-shopping-bag', label: '🛍️ Shopping' },
@@ -700,29 +792,29 @@
             
             const catSelect = document.getElementById('category');
             const map = type === 'income' ? incomeCategories : expenseCategories;
-            catSelect.innerHTML = Object.entries(map).map(([val, obj]) => `<option value="${val}">${obj.label}</option>`).join('');
+            catSelect.innerHTML = Object.entries(map).map(([val, obj]) => `<option value="${val}">${t[currentLang].cats[val] || obj.label}</option>`).join('');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             if (!userName) {
-                userName = prompt("Please enter your name:") || "User";
+                userName = prompt(t[currentLang].promptName) || "User";
                 localStorage.setItem('smart_user_name', userName);
             }
-            document.getElementById('greetingName').innerText = `Welcome, ${userName} 👋`;
+            document.getElementById('greetingName').innerText = `${t[currentLang].welcome}, ${userName} 👋`;
             
             document.getElementById('greetingName').addEventListener('click', () => {
-                const newName = prompt("Update your name:", userName);
+                const newName = prompt(t[currentLang].updateName, userName);
                 if (newName) {
                     userName = newName;
                     localStorage.setItem('smart_user_name', userName);
-                    document.getElementById('greetingName').innerText = `Welcome, ${userName} 👋`;
+                    document.getElementById('greetingName').innerText = `${t[currentLang].welcome}, ${userName} 👋`;
                 }
             });
 
             document.getElementById('date').valueAsDate = new Date();
             initTheme();
             setTxType('expense');
-            updateDashboard();
+            applyLang(currentLang);
         });
 
         const themeBtn = document.getElementById('themeBtn');
@@ -839,7 +931,7 @@
                 saveExpenseData();
                 renderAllList();
                 generateCharts();
-                showToast('Deleted');
+                showToast(t[currentLang].msgDeleted);
             }
         }
 
@@ -897,11 +989,11 @@
             }
 
             const recognition = new SpeechRecognition();
-            recognition.lang = 'hi-IN';
+            recognition.lang = currentLang === 'hi' ? 'hi-IN' : (currentLang === 'ur' ? 'ur-PK' : 'en-US');
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            recognition.onstart = () => showLoader('Listening...');
+            recognition.onstart = () => showLoader(t[currentLang].msgPDFGen.replace('PDF', '...'));
 
             recognition.onresult = (event) => {
                 hideLoader();
@@ -978,7 +1070,7 @@
                             <i class="fas ${catInfo.icon}"></i>
                         </div>
                         <div class="tx-details">
-                            <span class="tx-cat">${exp.category}</span>
+                            <span class="tx-cat">${t[currentLang].cats[exp.category] || exp.category}</span>
                             <span class="tx-date">${formatDate(exp.date)} • ${exp.note || 'No note'}</span>
                         </div>
                     </div>
@@ -1020,7 +1112,7 @@
 
             const recentList = document.getElementById('recentList');
             if (sorted.length === 0) {
-                recentList.innerHTML = `<div class="empty-state"><i class="fas fa-wallet"></i><p>No transactions yet. Start adding!</p></div>`;
+                recentList.innerHTML = `<div class="empty-state"><i class="fas fa-wallet"></i><p>${t[currentLang].noData}</p></div>`;
             } else {
                 recentList.innerHTML = sorted.slice(0, 5).map(createTxHTML).join('');
             }
@@ -1041,7 +1133,7 @@
             const list = document.getElementById('allList');
             const sorted = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
             if (sorted.length === 0) {
-                list.innerHTML = `<div class="empty-state"><p>No data</p></div>`;
+                list.innerHTML = `<div class="empty-state"><p>${t[currentLang].noData}</p></div>`;
             } else {
                 list.innerHTML = sorted.map(createTxHTML).join('');
             }
@@ -1141,7 +1233,7 @@
 
         document.getElementById('exportBtn').addEventListener('click', () => {
             if (expenses.length === 0) {
-                showToast('No data to export');
+                showToast(t[currentLang].msgNoData);
                 return;
             }
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(expenses, null, 2));
@@ -1149,16 +1241,16 @@
             dlAnchorElem.setAttribute("href", dataStr);
             dlAnchorElem.setAttribute("download", `expenses_export_${new Date().getTime()}.json`);
             dlAnchorElem.click();
-            showToast('Data exported successfully');
+            showToast(t[currentLang].msgExportDone);
         });
 
         document.getElementById('pdfBtn').addEventListener('click', () => {
             if (expenses.length === 0) {
-                showToast('No data to export');
+                showToast(t[currentLang].msgNoData);
                 return;
             }
 
-            showLoader('Generating PDF...');
+            showLoader(t[currentLang].msgPDFGen);
 
             setTimeout(() => {
                 try {
@@ -1190,7 +1282,7 @@
                         
                         return [
                             formatDate(exp.date),
-                            type === 'income' ? 'Income' : 'Expense',
+                            type === 'income' ? t[currentLang].txtIncome : t[currentLang].txtExpense,
                             exp.category,
                             exp.note || '-',
                             (type === 'income' ? '+Rs. ' : '-Rs. ') + exp.amount
@@ -1202,9 +1294,9 @@
                         head: [['Date', 'Type', 'Category', 'Note', 'Amount']],
                         body: tableData,
                         foot: [
-                            ['', '', '', 'Total Income:', `+Rs. ${totalInc}`],
-                            ['', '', '', 'Total Expense:', `-Rs. ${totalExp}`],
-                            ['', '', '', 'Net Balance:', `Rs. ${totalAmount}`]
+                            ['', '', '', t[currentLang].txtTotalIncome + ':', `+Rs. ${totalInc}`],
+                            ['', '', '', t[currentLang].txtTotalExpense + ':', `-Rs. ${totalExp}`],
+                            ['', '', '', t[currentLang].txtNetBalance + ':', `Rs. ${totalAmount}`]
                         ],
                         theme: 'striped',
                         headStyles: { fillColor: [79, 70, 229] },
@@ -1213,7 +1305,7 @@
 
                     doc.save(`expenses_report_${new Date().getTime()}.pdf`);
                     hideLoader();
-                    showToast('PDF downloaded successfully');
+                    showToast(t[currentLang].msgPDFDone);
                 } catch (err) {
                     hideLoader();
                     showToast('PDF generation failed');
