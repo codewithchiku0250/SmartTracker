@@ -102,9 +102,61 @@
 
         .summary-cards {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-bottom: 20px;
+        }
+
+        .summary-cards .top-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .summary-card.balance {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            text-align: center;
+        }
+        .summary-card.balance .summary-title,
+        .summary-card.balance .summary-amount {
+            color: white;
+        }
+
+        .type-toggle {
+            display: flex;
+            background: var(--bg-color);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .type-btn.active.expense {
+            background: var(--danger);
+            color: white;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        .type-btn.active.income {
+            background: var(--success);
+            color: white;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+        
+        .tx-amount.income {
+            color: var(--success);
         }
 
         .summary-card {
@@ -473,13 +525,19 @@
         <!-- DASHBOARD VIEW -->
         <div id="view-home" class="view active">
             <div class="summary-cards">
-                <div class="summary-card">
-                    <div class="summary-title">Aaj Ka Kharcha (Today)</div>
-                    <div class="summary-amount today" id="todayTotal">₹0</div>
+                <div class="summary-card balance">
+                    <div class="summary-title">Total Balance</div>
+                    <div class="summary-amount" id="totalBalance">₹0</div>
                 </div>
-                <div class="summary-card">
-                    <div class="summary-title">Mahine Ka (Month)</div>
-                    <div class="summary-amount" id="monthTotal">₹0</div>
+                <div class="top-row">
+                    <div class="summary-card">
+                        <div class="summary-title">Income (Month)</div>
+                        <div class="summary-amount" id="monthIncome" style="color: var(--success);">₹0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="summary-title">Expense (Month)</div>
+                        <div class="summary-amount" id="monthExpense" style="color: var(--danger);">₹0</div>
+                    </div>
                 </div>
             </div>
 
@@ -495,7 +553,12 @@
         <!-- ADD EXPENSE VIEW -->
         <div id="view-add" class="view">
             <div class="card">
-                <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Kharcha Add Karein</h2>
+                <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Transaction Add Karein</h2>
+
+                <div class="type-toggle">
+                    <button type="button" class="type-btn expense active" onclick="setTxType('expense')">Kharcha</button>
+                    <button type="button" class="type-btn income" onclick="setTxType('income')">Kamai</button>
+                </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-voice" id="voiceBtn">
@@ -518,15 +581,7 @@
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select id="category" class="form-control" required>
-                            <option value="Food">🍔 Food & Dining</option>
-                            <option value="Travel">🚗 Travel & Transport</option>
-                            <option value="Shopping">🛍️ Shopping</option>
-                            <option value="Bills">📱 Bills & Recharges</option>
-                            <option value="Groceries">🥦 Groceries</option>
-                            <option value="Health">💊 Health</option>
-                            <option value="Other">✨ Other</option>
-                        </select>
+                        <select id="category" class="form-control" required></select>
                     </div>
                     <div class="form-group">
                         <label>Note (Optional)</label>
@@ -600,30 +655,44 @@
         let expenses = JSON.parse(localStorage.getItem('smart_expenses')) || [];
         let pieChartInstance = null;
         let barChartInstance = null;
+        let currentTxType = 'expense';
 
-        const categoryColors = {
-            'Food': '#f59e0b',
-            'Travel': '#3b82f6',
-            'Shopping': '#ec4899',
-            'Bills': '#8b5cf6',
-            'Groceries': '#10b981',
-            'Health': '#ef4444',
-            'Other': '#6b7280'
+        const expenseCategories = {
+            'Food': { color: '#f59e0b', icon: 'fa-hamburger', label: '🍔 Food & Dining' },
+            'Travel': { color: '#3b82f6', icon: 'fa-car', label: '🚗 Travel & Transport' },
+            'Shopping': { color: '#ec4899', icon: 'fa-shopping-bag', label: '🛍️ Shopping' },
+            'Bills': { color: '#8b5cf6', icon: 'fa-file-invoice-dollar', label: '📱 Bills & Recharges' },
+            'Groceries': { color: '#10b981', icon: 'fa-carrot', label: '🥦 Groceries' },
+            'Health': { color: '#ef4444', icon: 'fa-pills', label: '💊 Health' },
+            'Other': { color: '#6b7280', icon: 'fa-star', label: '✨ Other' }
         };
 
-        const categoryIcons = {
-            'Food': 'fa-hamburger',
-            'Travel': 'fa-car',
-            'Shopping': 'fa-shopping-bag',
-            'Bills': 'fa-file-invoice-dollar',
-            'Groceries': 'fa-carrot',
-            'Health': 'fa-pills',
-            'Other': 'fa-star'
+        const incomeCategories = {
+            'Salary': { color: '#10b981', icon: 'fa-money-bill-wave', label: '💰 Salary' },
+            'Business': { color: '#3b82f6', icon: 'fa-briefcase', label: '💼 Business' },
+            'Gift': { color: '#f59e0b', icon: 'fa-gift', label: '🎁 Gift' },
+            'Other': { color: '#6b7280', icon: 'fa-star', label: '✨ Other' }
         };
+
+        function getCatDetails(type, cat) {
+            const map = type === 'income' ? incomeCategories : expenseCategories;
+            return map[cat] || map['Other'];
+        }
+
+        function setTxType(type) {
+            currentTxType = type;
+            document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.type-btn.${type}`).classList.add('active');
+            
+            const catSelect = document.getElementById('category');
+            const map = type === 'income' ? incomeCategories : expenseCategories;
+            catSelect.innerHTML = Object.entries(map).map(([val, obj]) => `<option value="${val}">${obj.label}</option>`).join('');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('date').valueAsDate = new Date();
             initTheme();
+            setTxType('expense');
             updateDashboard();
         });
 
@@ -668,6 +737,7 @@
                 if (!document.getElementById('editId').value) {
                     document.getElementById('addForm').reset();
                     document.getElementById('date').valueAsDate = new Date();
+                    setTxType('expense');
                 }
             } else {
                 document.getElementById('editId').value = '';
@@ -710,6 +780,7 @@
             const id = document.getElementById('editId').value;
             const expense = {
                 id: id ? id : Date.now().toString(),
+                type: currentTxType,
                 amount: parseFloat(document.getElementById('amount').value),
                 category: document.getElementById('category').value,
                 note: document.getElementById('note').value,
@@ -747,6 +818,7 @@
             const exp = expenses.find(e => e.id === id);
             if (exp) {
                 document.getElementById('editId').value = exp.id;
+                setTxType(exp.type || 'expense');
                 document.getElementById('amount').value = exp.amount;
                 document.getElementById('category').value = exp.category;
                 document.getElementById('note').value = exp.note;
@@ -755,7 +827,7 @@
             }
         }
 
-        const keywords = {
+        const expenseKeywords = {
             'Food': ['sabzi', 'khana', 'food', 'restaurant', 'burger', 'pizza', 'tea', 'chai', 'coffee', 'hotel', 'lunch', 'dinner'],
             'Travel': ['bus', 'train', 'auto', 'cab', 'uber', 'ola', 'petrol', 'diesel', 'ticket', 'flight', 'metro'],
             'Shopping': ['clothes', 'kapde', 'shoes', 'amazon', 'flipkart', 'mall', 'shopping', 'shirt'],
@@ -764,13 +836,20 @@
             'Health': ['medicine', 'dawae', 'doctor', 'hospital', 'clinic', 'pharmacy']
         };
 
-        function parseSmartInput(text) {
+        const incomeKeywords = {
+            'Salary': ['salary', 'tankha', 'paisa mila', 'received', 'kamai', 'aaya'],
+            'Business': ['business', 'dukan', 'sale', 'bikri'],
+            'Gift': ['gift', 'tohfa', 'shagun']
+        };
+
+        function parseSmartInput(text, type = currentTxType) {
             text = text.toLowerCase();
             let amount = 0;
             const amountMatch = text.match(/(?:rs\.?|₹|rupees)?\s*(\d+)\s*(?:rs\.?|rupees)?/);
             if (amountMatch) amount = parseFloat(amountMatch[1]);
 
             let category = 'Other';
+            const keywords = type === 'income' ? incomeKeywords : expenseKeywords;
             for (const [cat, words] of Object.entries(keywords)) {
                 if (words.some(word => text.includes(word))) {
                     category = cat;
@@ -858,11 +937,16 @@
         }
 
         function createTxHTML(exp) {
+            const type = exp.type || 'expense';
+            const catInfo = getCatDetails(type, exp.category);
+            const amountClass = type === 'income' ? 'tx-amount income' : 'tx-amount';
+            const amountSign = type === 'income' ? '+' : '-';
+            
             return `
                 <div class="transaction-item">
                     <div class="tx-left">
-                        <div class="tx-icon" style="color: ${categoryColors[exp.category] || categoryColors['Other']}; background: ${(categoryColors[exp.category] || categoryColors['Other'])}20">
-                            <i class="fas ${categoryIcons[exp.category] || categoryIcons['Other']}"></i>
+                        <div class="tx-icon" style="color: ${catInfo.color}; background: ${catInfo.color}20">
+                            <i class="fas ${catInfo.icon}"></i>
                         </div>
                         <div class="tx-details">
                             <span class="tx-cat">${exp.category}</span>
@@ -870,7 +954,7 @@
                         </div>
                     </div>
                     <div class="tx-right">
-                        <span class="tx-amount">₹${exp.amount}</span>
+                        <span class="${amountClass}">${amountSign}₹${exp.amount}</span>
                         <div class="tx-actions">
                             <button onclick="editExpense('${exp.id}')"><i class="fas fa-edit"></i></button>
                             <button onclick="deleteExpense('${exp.id}')"><i class="fas fa-trash"></i></button>
@@ -884,22 +968,30 @@
             const today = new Date().toISOString().split('T')[0];
             const currentMonth = today.substring(0, 7);
 
-            let todaySum = 0;
-            let monthSum = 0;
+            let balance = 0;
+            let monthIncome = 0;
+            let monthExpense = 0;
 
             const sorted = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date) || b.id - a.id);
 
             sorted.forEach(exp => {
-                if (exp.date === today) todaySum += exp.amount;
-                if (exp.date.startsWith(currentMonth)) monthSum += exp.amount;
+                const type = exp.type || 'expense';
+                if (type === 'income') {
+                    balance += exp.amount;
+                    if (exp.date.startsWith(currentMonth)) monthIncome += exp.amount;
+                } else {
+                    balance -= exp.amount;
+                    if (exp.date.startsWith(currentMonth)) monthExpense += exp.amount;
+                }
             });
 
-            document.getElementById('todayTotal').innerText = `₹${todaySum}`;
-            document.getElementById('monthTotal').innerText = `₹${monthSum}`;
+            document.getElementById('totalBalance').innerText = `₹${balance}`;
+            document.getElementById('monthIncome').innerText = `₹${monthIncome}`;
+            document.getElementById('monthExpense').innerText = `₹${monthExpense}`;
 
             const recentList = document.getElementById('recentList');
             if (sorted.length === 0) {
-                recentList.innerHTML = `<div class="empty-state"><i class="fas fa-wallet"></i><p>No expenses yet. Start adding!</p></div>`;
+                recentList.innerHTML = `<div class="empty-state"><i class="fas fa-wallet"></i><p>No transactions yet. Start adding!</p></div>`;
             } else {
                 recentList.innerHTML = sorted.slice(0, 5).map(createTxHTML).join('');
             }
@@ -921,11 +1013,17 @@
             const gridColor = isDark ? '#374151' : '#e5e7eb';
 
             const catTotals = {};
-            const dailyTotals = {};
+            const dailyExpTotals = {};
+            const dailyIncTotals = {};
 
             expenses.forEach(exp => {
-                catTotals[exp.category] = (catTotals[exp.category] || 0) + exp.amount;
-                dailyTotals[exp.date] = (dailyTotals[exp.date] || 0) + exp.amount;
+                const type = exp.type || 'expense';
+                if (type === 'expense') {
+                    catTotals[exp.category] = (catTotals[exp.category] || 0) + exp.amount;
+                    dailyExpTotals[exp.date] = (dailyExpTotals[exp.date] || 0) + exp.amount;
+                } else {
+                    dailyIncTotals[exp.date] = (dailyIncTotals[exp.date] || 0) + exp.amount;
+                }
             });
 
             const pieCtx = document.getElementById('pieChart').getContext('2d');
@@ -933,13 +1031,13 @@
 
             const catLabels = Object.keys(catTotals);
             const catData = Object.values(catTotals);
-            const catBg = catLabels.map(l => categoryColors[l] || categoryColors['Other']);
+            const catBg = catLabels.map(l => (expenseCategories[l] || expenseCategories['Other']).color);
 
             if (catLabels.length === 0) {
                 pieCtx.font = "14px Outfit";
                 pieCtx.fillStyle = textColor;
                 pieCtx.textAlign = "center";
-                pieCtx.fillText("No data for chart", 150, 100);
+                pieCtx.fillText("No expense data", 150, 100);
             } else {
                 pieChartInstance = new Chart(pieCtx, {
                     type: 'doughnut',
@@ -966,24 +1064,33 @@
                 last7Days.push(d.toISOString().split('T')[0]);
             }
 
-            const barData = last7Days.map(date => dailyTotals[date] || 0);
+            const expData = last7Days.map(date => dailyExpTotals[date] || 0);
+            const incData = last7Days.map(date => dailyIncTotals[date] || 0);
             const barLabels = last7Days.map(date => formatDate(date));
 
             barChartInstance = new Chart(barCtx, {
                 type: 'bar',
                 data: {
                     labels: barLabels,
-                    datasets: [{
-                        label: 'Expense',
-                        data: barData,
-                        backgroundColor: '#4f46e5',
-                        borderRadius: 5
-                    }]
+                    datasets: [
+                        {
+                            label: 'Income',
+                            data: incData,
+                            backgroundColor: '#10b981',
+                            borderRadius: 5
+                        },
+                        {
+                            label: 'Expense',
+                            data: expData,
+                            backgroundColor: '#ef4444',
+                            borderRadius: 5
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { legend: { labels: { color: textColor, font: { family: 'Outfit' } } } },
                     scales: {
                         y: { beginAtZero: true, grid: { color: gridColor }, ticks: { color: textColor, font: { family: 'Outfit' } } },
                         x: { grid: { display: false }, ticks: { color: textColor, font: { family: 'Outfit' } } }
@@ -1027,20 +1134,24 @@
                     let totalAmount = 0;
 
                     const tableData = sorted.map(exp => {
-                        totalAmount += exp.amount;
+                        const type = exp.type || 'expense';
+                        if (type === 'income') totalAmount += exp.amount;
+                        else totalAmount -= exp.amount;
+                        
                         return [
                             formatDate(exp.date),
+                            type === 'income' ? 'Income' : 'Expense',
                             exp.category,
                             exp.note || '-',
-                            `Rs. ${exp.amount}`
+                            (type === 'income' ? '+Rs. ' : '-Rs. ') + exp.amount
                         ];
                     });
 
                     doc.autoTable({
                         startY: 35,
-                        head: [['Date', 'Category', 'Note', 'Amount']],
+                        head: [['Date', 'Type', 'Category', 'Note', 'Amount']],
                         body: tableData,
-                        foot: [['', '', 'Total:', `Rs. ${totalAmount}`]],
+                        foot: [['', '', '', 'Balance:', `Rs. ${totalAmount}`]],
                         theme: 'striped',
                         headStyles: { fillColor: [79, 70, 229] },
                         footStyles: { fillColor: [243, 244, 246], textColor: [31, 41, 55], fontStyle: 'bold' }
