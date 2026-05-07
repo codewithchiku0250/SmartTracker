@@ -1282,7 +1282,7 @@ const expenseCategories = {
                         
                         return [
                             formatDate(exp.date),
-                            type === 'income' ? t[currentLang].txtIncome : t[currentLang].txtExpense,
+                            type === 'income' ? t['en'].txtIncome : t['en'].txtExpense,
                             exp.category,
                             exp.note || '-',
                             (type === 'income' ? '+Rs. ' : '-Rs. ') + exp.amount
@@ -1294,9 +1294,9 @@ const expenseCategories = {
                         head: [['Date', 'Type', 'Category', 'Note', 'Amount']],
                         body: tableData,
                         foot: [
-                            ['', '', '', t[currentLang].txtTotalIncome + ':', `+Rs. ${totalInc}`],
-                            ['', '', '', t[currentLang].txtTotalExpense + ':', `-Rs. ${totalExp}`],
-                            ['', '', '', t[currentLang].txtNetBalance + ':', `Rs. ${totalAmount}`]
+                            ['', '', '', t['en'].txtTotalIncome + ':', `+Rs. ${totalInc}`],
+                            ['', '', '', t['en'].txtTotalExpense + ':', `-Rs. ${totalExp}`],
+                            ['', '', '', t['en'].txtNetBalance + ':', `Rs. ${totalAmount}`]
                         ],
                         theme: 'striped',
                         headStyles: { fillColor: [79, 70, 229] },
