@@ -553,25 +553,24 @@
         <!-- ADD EXPENSE VIEW -->
         <div id="view-add" class="view">
             <div class="card">
-                <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Transaction Add Karein</h2>
+                <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Add Transaction</h2>
 
                 <div class="type-toggle">
-                    <button type="button" class="type-btn expense active" onclick="setTxType('expense')">Kharcha</button>
-                    <button type="button" class="type-btn income" onclick="setTxType('income')">Kamai</button>
+                    <button type="button" class="type-btn expense active" onclick="setTxType('expense')">Expense</button>
+                    <button type="button" class="type-btn income" onclick="setTxType('income')">Income</button>
                 </div>
 
                 <div class="action-buttons">
                     <button class="btn btn-voice" id="voiceBtn">
-                        <i class="fas fa-microphone"></i> Bolkar Jodein
+                        <i class="fas fa-microphone"></i> Voice Input
                     </button>
                     <label class="btn btn-photo" style="margin: 0; cursor: pointer;">
-                        <i class="fas fa-camera"></i> Bill Photo
+                        <i class="fas fa-camera"></i> Scan Bill
                         <input type="file" accept="image/*" capture="environment" id="photoInput">
                     </label>
                 </div>
 
-                <div style="text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;">Ya khud
-                    likhein (Or enter manually)</div>
+                <div style="text-align: center; margin: 15px 0; color: var(--text-muted); font-size: 0.9rem;">Or enter manually</div>
 
                 <form id="addForm">
                     <input type="hidden" id="editId" value="">
@@ -585,7 +584,7 @@
                     </div>
                     <div class="form-group">
                         <label>Note (Optional)</label>
-                        <input type="text" id="note" class="form-control" placeholder="Kya liya? (What did you buy?)">
+                        <input type="text" id="note" class="form-control" placeholder="Notes (e.g. Lunch with team)">
                     </div>
                     <div class="form-group">
                         <label>Date</label>
@@ -872,7 +871,7 @@
             recognition.interimResults = false;
             recognition.maxAlternatives = 1;
 
-            recognition.onstart = () => showLoader('Sun raha hu... (Listening)');
+            recognition.onstart = () => showLoader('Listening...');
 
             recognition.onresult = (event) => {
                 hideLoader();
@@ -903,7 +902,7 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            showLoader('Bill padh raha hu... (Scanning)');
+            showLoader('Scanning bill...');
             try {
                 const result = await Tesseract.recognize(file, 'eng');
                 const text = result.data.text;
@@ -1118,7 +1117,7 @@
                 return;
             }
 
-            showLoader('PDF generate ho raha hai...');
+            showLoader('Generating PDF...');
 
             setTimeout(() => {
                 try {
